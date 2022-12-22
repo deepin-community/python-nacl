@@ -1,0 +1,33 @@
+From: Scott Kitterman <scott@kitterman.com>
+Date: Tue, 26 May 2020 03:53:46 -0400
+Subject: remove privacy-breach images
+
+---
+ README.rst | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/README.rst b/README.rst
+index 368cb75..805ff14 100644
+--- a/README.rst
++++ b/README.rst
+@@ -2,20 +2,6 @@
+ PyNaCl: Python binding to the libsodium library
+ ===============================================
+ 
+-.. image:: https://img.shields.io/pypi/v/pynacl.svg
+-    :target: https://pypi.org/project/PyNaCl/
+-    :alt: Latest Version
+-
+-.. image:: https://travis-ci.org/pyca/pynacl.svg?branch=master
+-    :target: https://travis-ci.org/pyca/pynacl
+-
+-.. image:: https://codecov.io/github/pyca/pynacl/coverage.svg?branch=master
+-    :target: https://codecov.io/github/pyca/pynacl?branch=master
+-
+-.. image:: https://img.shields.io/pypi/pyversions/pynacl.svg
+-    :target: https://pypi.org/project/PyNaCl/
+-    :alt: Compatible Python Versions
+-
+ PyNaCl is a Python binding to `libsodium`_, which is a fork of the
+ `Networking and Cryptography library`_. These libraries have a stated goal of
+ improving usability, security and speed. It supports Python 2.7 and 3.5+ as
