@@ -12,31 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import, division, print_function
 
 import os
+from typing import Callable, Dict, List, Optional, Tuple
 
-from six import byte2int, int2byte
+import pytest
 
 
-def assert_equal(x, y):
+def assert_equal(x: object, y: object) -> None:
     assert x == y
     assert not (x != y)
 
 
-def assert_not_equal(x, y):
+def assert_not_equal(x: object, y: object) -> None:
     assert x != y
     assert not (x == y)
 
 
-def read_crypto_test_vectors(fname, maxels=0, delimiter=None):
+def read_crypto_test_vectors(
+    fname: str, maxels: int = 0, delimiter: Optional[bytes] = None
+) -> List[Tuple[bytes, ...]]:
     assert delimiter is not None and isinstance(delimiter, bytes)
     vectors = []
     path = os.path.join(os.path.dirname(__file__), "data", fname)
     with open(path, "rb") as fp:
         for line in fp:
             line = line.rstrip()
-            if line and line[0] != b'#'[0]:
+            if line and line[0] != b"#"[0]:
                 splt = [x for x in line.split(delimiter)]
                 if maxels:
                     splt = splt[:maxels]
@@ -44,27 +46,43 @@ def read_crypto_test_vectors(fname, maxels=0, delimiter=None):
     return vectors
 
 
-def read_kv_test_vectors(fname, delimiter=None, newrecord=None):
+def read_kv_test_vectors(
+    fname: str,
+    delimiter: Optional[bytes] = None,
+    newrecord: Optional[bytes] = None,
+) -> List[Dict[str, bytes]]:
     assert delimiter is not None and isinstance(delimiter, bytes)
     assert newrecord is not None and isinstance(newrecord, bytes)
     vectors = []
     path = os.path.join(os.path.dirname(__file__), "data", fname)
-    vector = {}
-    with open(path, 'rb') as fp:
+    vector: Dict[str, bytes] = {}
+    with open(path, "rb") as fp:
         for line in fp:
             line = line.rstrip()
-            if line and line[0] != b'#'[0]:
+            if line and line[0] != b"#"[0]:
                 [k, v] = line.split(delimiter, 1)
                 k, v = k.strip(), v.strip()
-                if k == newrecord and k.decode('utf-8') in vector:
+                if k == newrecord and k.decode("utf-8") in vector:
                     vectors.append(vector)
                     vector = {}
-                vector[k.decode('utf-8')] = v
+                vector[k.decode("utf-8")] = v
         vectors.append(vector)
     return vectors
 
 
-def flip_byte(original, byte_offset):
-    return (original[:byte_offset] +
-            int2byte(0x01 ^ byte2int(original[byte_offset:byte_offset + 1])) +
-            original[byte_offset + 1:])
+def flip_byte(original: bytes, byte_offset: int) -> bytes:
+    return (
+        original[:byte_offset]
+        + bytes([0x01 ^ original[byte_offset]])
+        + original[byte_offset + 1 :]
+    )
+
+
+# Type safety: it's fine to use `...` here, but mypy config doesn't like it because it's
+# an explict `Any`.
+def check_type_error(  # type: ignore[misc]
+    expected: str, f: Callable[..., object], *args: object
+) -> None:
+    with pytest.raises(TypeError) as e:
+        f(*args)
+    assert expected in str(e.value)
