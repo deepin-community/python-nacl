@@ -1,0 +1,38 @@
+From: Colin Watson <cjwatson@debian.org>
+Date: Mon, 26 Aug 2024 17:48:49 +0100
+Subject: Build bindings reproducibly
+
+`glob` output isn't guaranteed to be in any particular order, so
+`_sodium.*.so` wasn't always reproducible.
+
+Forwarded: https://github.com/pyca/pynacl/pull/836
+Last-Update: 2024-08-26
+---
+ src/bindings/build.py | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/bindings/build.py b/src/bindings/build.py
+index 9634237..777237b 100644
+--- a/src/bindings/build.py
++++ b/src/bindings/build.py
+@@ -22,12 +22,16 @@ from cffi import FFI
+ __all__ = ["ffi"]
+ 
+ 
+-HEADERS = glob.glob(
+-    os.path.join(os.path.abspath(os.path.dirname(__file__)), "*.h")
++HEADERS = sorted(
++    glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "*.h"))
+ )
+ 
+-MINIMAL_HEADERS = glob.glob(
+-    os.path.join(os.path.abspath(os.path.dirname(__file__)), "minimal", "*.h")
++MINIMAL_HEADERS = sorted(
++    glob.glob(
++        os.path.join(
++            os.path.abspath(os.path.dirname(__file__)), "minimal", "*.h"
++        )
++    )
+ )
+ 
+ 
