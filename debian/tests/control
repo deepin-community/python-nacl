@@ -1,3 +1,0 @@
-Tests: python3
-Depends: @, @builddeps@
-Restrictions: needs-root
